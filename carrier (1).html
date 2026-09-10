@@ -1,0 +1,4418 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SGShips — Global Fulfillment & Delivery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0e1420;
+      --navy: #0b1e3d;
+      --navy-2: #122a52;
+      --paper: #eef1f0;
+      --paper-2: #f7f8f6;
+      --orange: #ff6a13;
+      --orange-dark: #e0570a;
+      --teal: #0ea5a0;
+      --slate: #5b6b7a;
+      --line: #d7dcd8;
+      --red: #d93636;
+      --green: #1e8e5a;
+      --amber: #c98a00;
+      --white: #ffffff;
+      --font-display: "Archivo Black", "Archivo", sans-serif;
+      --font-head: "Archivo", sans-serif;
+      --font-body: "IBM Plex Sans", sans-serif;
+      --font-mono: "IBM Plex Mono", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--paper-2);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--orange);
+      outline-offset: 2px;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== back-to-site pill (only shown inside console) ===== */
+    .back-pill {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      z-index: 500;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: var(--ink);
+      color: #fff;
+      border-radius: 999px;
+      padding: 11px 18px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      border: none;
+    }
+
+    .back-pill.visible {
+      display: flex;
+    }
+
+    .back-pill:hover {
+      background: var(--orange);
+    }
+
+    /* ===== login screen ===== */
+    .login-shell {
+      display: none;
+      min-height: 100vh;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      background: var(--ink);
+      background-image: radial-gradient(circle,
+          rgba(255, 255, 255, 0.06) 1px,
+          transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .login-shell.visible {
+      display: flex;
+    }
+
+    .login-card {
+      width: 400px;
+      background: #161f2c;
+      border: 1px solid #2a3446;
+      border-radius: 10px;
+      padding: 36px;
+      color: #fff;
+    }
+
+    .login-card .mark {
+      width: 6rem;
+      height: auto;
+      border-radius: 8px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0px auto; 
+    }
+
+    .login-card .mark svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .login-card h2 {
+      font-family: var(--font-head);
+      font-size: 20px;
+      margin: 0 0 6px;
+    }
+
+    .login-card p {
+      color: #8090a8;
+      font-size: 13px;
+      margin: 0 0 22px;
+      line-height: 1.5;
+    }
+
+    .login-card label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #8090a8;
+      margin-bottom: 8px;
+    }
+
+    .login-card input {
+      width: 100%;
+      background: #0e1420;
+      border: 1.5px solid #2a3446;
+      color: #fff;
+      border-radius: 5px;
+      padding: 12px 14px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+    .login-error {
+      color: #f87171;
+      font-size: 12.5px;
+      margin: -6px 0 14px;
+      font-family: var(--font-mono);
+      display: none;
+    }
+
+    .login-demo {
+      background: #0e1420;
+      border: 1px solid #2a3446;
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-top: 20px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #8090a8;
+      line-height: 1.9;
+    }
+
+    .login-demo b {
+      color: #d7dee8;
+    }
+
+    .login-back {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #5c6b80;
+    }
+
+    .login-back:hover {
+      color: var(--orange);
+    }
+
+    /* ===== role badge / user chip ===== */
+    .role-badge {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 20px;
+      display: inline-block;
+    }
+
+    .role-Admin {
+      background: rgba(255, 106, 19, 0.18);
+      color: #ff8a42;
+    }
+
+    .role-Operations {
+      background: rgba(14, 165, 160, 0.18);
+      color: #4cdbd3;
+    }
+
+    .role-Viewer {
+      background: rgba(255, 255, 255, 0.12);
+      color: #b8c4d6;
+    }
+
+    .role-Customer {
+      background: rgba(30, 142, 90, 0.18);
+      color: #4ade80;
+    }
+
+    .user-chip {
+      padding: 14px 20px;
+      border-top: 1px solid #212b3b;
+    }
+
+    .user-chip .name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .user-chip button {
+      margin-top: 10px;
+      background: none;
+      border: none;
+      color: #9aa6ba;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      padding: 0;
+    }
+
+    .user-chip button:hover {
+      color: var(--orange);
+    }
+
+    .readonly-banner {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      color: var(--slate);
+      margin-bottom: 16px;
+    }
+
+    /* ===== customer portal ===== */
+    .customer-shell {
+      display: none;
+      min-height: 100vh;
+      background: var(--paper-2);
+    }
+
+    .customer-shell.visible {
+      display: block;
+    }
+
+    .customer-topbar {
+      background: var(--navy);
+      color: #fff;
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .customer-topbar-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .customer-body {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 36px 28px 60px;
+    }
+
+    .customer-body h2 {
+      font-family: var(--font-head);
+      font-size: 24px;
+      margin: 0 0 6px;
+    }
+
+    .customer-body p.sub-lead {
+      color: var(--slate);
+      font-size: 14px;
+      margin: 0 0 28px;
+    }
+
+    .customer-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 22px;
+      margin-bottom: 16px;
+    }
+
+    .cc-logout {
+      background: none;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 8px 14px;
+      border-radius: 5px;
+    }
+
+    .cc-logout:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+
+    /* reused tracking-card partial on a light background needs its own palette */
+    .customer-card .track-hdr {
+      border-bottom-color: var(--line);
+    }
+
+    .customer-card .track-hdr-top b {
+      color: var(--ink);
+    }
+
+    .customer-card .track-route {
+      color: var(--slate);
+    }
+
+    .customer-card .track-meta {
+      color: var(--slate);
+    }
+
+    .customer-card .track-meta b {
+      color: var(--ink);
+    }
+
+    .customer-card .step-done .step-mark {
+      background: var(--teal);
+      color: #fff;
+    }
+
+    .customer-card .step-current .step-mark {
+      background: var(--orange);
+      color: #fff;
+    }
+
+    .customer-card .step-upcoming .step-mark {
+      border-color: var(--line);
+    }
+
+    .customer-card .step-done span {
+      color: var(--ink);
+    }
+
+    .customer-card .step-current span {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .customer-card .step-upcoming span {
+      color: var(--slate);
+    }
+
+    .customer-card .tl li::before {
+      background: var(--line);
+    }
+
+    /* ============================================================ PUBLIC SITE ============================================================ */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(247, 248, 246, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .site-header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 19px;
+      letter-spacing: -0.01em;
+    }
+
+    .brand .mark {
+      width: 6.5rem;
+      height: auto;
+      border-radius: 8px;
+      /* background: var(--navy); */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand .mark svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .brand .go {
+      color: var(--orange);
+    }
+
+    .header-logo {
+      width: 100%;
+      height: auto;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .nav-links a {
+      color: var(--slate);
+      padding: 6px 0;
+      border-bottom: 2px solid transparent;
+      transition: 0.15s;
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+      border-color: var(--orange);
+    }
+
+    .header-cta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .tel-chip {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--navy);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 14px;
+      padding: 12px 22px;
+      border-radius: 4px;
+      border: 2px solid transparent;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--orange-dark);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border-color: var(--navy);
+      color: var(--navy);
+    }
+
+    .btn-outline:hover {
+      background: var(--navy);
+      color: #fff;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--slate);
+      border-color: var(--line);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--navy);
+      color: var(--navy);
+    }
+
+    .btn-sm {
+      padding: 8px 14px;
+      font-size: 12.5px;
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    .hero {
+      position: relative;
+      background: var(--navy);
+      color: #fff;
+      overflow: hidden;
+      border-bottom: 6px solid var(--orange);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle,
+          rgba(255, 255, 255, 0.09) 1px,
+          transparent 1px);
+      background-size: 26px 26px;
+      opacity: 0.5;
+    }
+
+    .hero-inner {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 76px 28px 64px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 56px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--orange);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      font-weight: 600;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 26px;
+      height: 1px;
+      background: var(--orange);
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 50px;
+      line-height: 1.06;
+      letter-spacing: -0.01em;
+      margin: 0 0 22px;
+    }
+
+    .hero h1 span {
+      color: var(--orange);
+    }
+
+    .hero p.sub {
+      font-size: 17px;
+      line-height: 1.6;
+      color: #c7d0de;
+      max-width: 520px;
+      margin: 0 0 32px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 34px;
+    }
+
+    .hero-stamps {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .stamp {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+      border: 1.5px dashed rgba(255, 255, 255, 0.4);
+      color: #dce3ec;
+      padding: 7px 12px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+
+    .awb-card {
+      background: var(--paper-2);
+      color: var(--ink);
+      border-radius: 10px;
+      padding: 22px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+      position: relative;
+    }
+
+    .awb-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .awb-label {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.1em;
+      color: var(--slate);
+      text-transform: uppercase;
+    }
+
+    .awb-code {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--navy);
+    }
+
+    .barcode {
+      height: 44px;
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      margin: 14px 0 6px;
+    }
+
+    .barcode i {
+      display: block;
+      background: var(--ink);
+      width: 3px;
+      font-style: normal;
+    }
+
+    .awb-route {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 20px 0 18px;
+    }
+
+    .awb-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .awb-dot.end {
+      background: var(--teal);
+    }
+
+    .awb-dashline {
+      flex: 1;
+      height: 0;
+      border-top: 2px dashed var(--line);
+      margin: 0 8px;
+      position: relative;
+    }
+
+    .awb-plane {
+      position: absolute;
+      top: -9px;
+      left: 38%;
+      font-size: 16px;
+    }
+
+    .awb-cities {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--slate);
+      margin-top: -10px;
+      margin-bottom: 14px;
+    }
+
+    .awb-cities b {
+      color: var(--ink);
+      font-size: 12px;
+    }
+
+    .awb-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+
+    .awb-field span {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--slate);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 3px;
+    }
+
+    .awb-field b {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .logo-strip {
+      border-bottom: 1px solid var(--line);
+      background: var(--white);
+    }
+
+    .logo-strip-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 22px 28px;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      flex-wrap: wrap;
+    }
+
+    .logo-strip-label {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--slate);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .courier-chip {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--navy);
+      opacity: 0.55;
+    }
+
+    .section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 88px 28px;
+    }
+
+    .section-head {
+      max-width: 640px;
+      margin-bottom: 48px;
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .section h2 {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 34px;
+      letter-spacing: -0.01em;
+      margin: 0 0 14px;
+      line-height: 1.15;
+    }
+
+    .section p.lead {
+      font-size: 16px;
+      color: var(--slate);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    .manifest {
+      border-top: 2px solid var(--ink);
+    }
+
+    .manifest-row {
+      display: grid;
+      grid-template-columns: 70px 1.4fr 1.7fr 140px;
+      gap: 24px;
+      align-items: center;
+      padding: 26px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .manifest-row:hover {
+      background: var(--paper);
+    }
+
+    .manifest-num {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--slate);
+    }
+
+    .manifest-num b {
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 26px;
+      color: var(--navy);
+    }
+
+    .manifest-title {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 19px;
+    }
+
+    .manifest-desc {
+      font-size: 14px;
+      color: var(--slate);
+      line-height: 1.6;
+    }
+
+    .manifest-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--teal);
+      border: 1.5px solid var(--teal);
+      padding: 6px 10px;
+      border-radius: 3px;
+      text-align: center;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      position: relative;
+    }
+
+    .flow::before {
+      content: "";
+      position: absolute;
+      top: 19px;
+      left: 5%;
+      right: 5%;
+      height: 2px;
+      background: var(--line);
+    }
+
+    .flow-step {
+      position: relative;
+      padding: 0 14px;
+      text-align: left;
+    }
+
+    .flow-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .flow-step h4 {
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 700;
+      margin: 0 0 6px;
+    }
+
+    .flow-step p {
+      font-size: 13px;
+      color: var(--slate);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .stats-band {
+      background: var(--navy);
+      color: #fff;
+    }
+
+    .stats-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 56px 28px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .stat b {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 38px;
+      display: block;
+      color: var(--orange);
+    }
+
+    .stat span {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #b8c4d6;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .track-panel {
+      background: var(--ink);
+      border-radius: 12px;
+      padding: 44px;
+      color: #fff;
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .track-panel h3 {
+      font-family: var(--font-head);
+      font-size: 24px;
+      margin: 0 0 10px;
+    }
+
+    .track-panel p {
+      color: #aeb8c4;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0 0 22px;
+    }
+
+    .track-form {
+      display: flex;
+      gap: 10px;
+    }
+
+    .track-input {
+      flex: 1;
+      background: #1b2432;
+      border: 1.5px solid #303b4c;
+      color: #fff;
+      border-radius: 4px;
+      padding: 14px 16px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+    }
+
+    .track-input::placeholder {
+      color: #5c6b80;
+    }
+
+    .track-hint {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: #5c6b80;
+      margin-top: 10px;
+    }
+
+    .track-result {
+      background: #161f2c;
+      border-radius: 8px;
+      padding: 20px;
+      min-height: 260px;
+    }
+
+    .track-result .empty {
+      color: #5c6b80;
+      font-size: 13px;
+      font-family: var(--font-mono);
+      text-align: center;
+      padding-top: 90px;
+    }
+
+    .track-hdr {
+      margin-bottom: 14px;
+      border-bottom: 1px solid #2a3446;
+      padding-bottom: 14px;
+    }
+
+    .track-hdr-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+
+    .track-hdr-top b {
+      font-family: var(--font-mono);
+      font-size: 15px;
+    }
+
+    .track-route {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #aeb8c4;
+    }
+
+    .track-meta {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #8090a8;
+    }
+
+    .track-meta b {
+      color: #d7dee8;
+    }
+
+    .status-pill {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 5px 10px;
+      border-radius: 20px;
+    }
+
+    .pill-transit {
+      background: rgba(14, 165, 160, 0.18);
+      color: #4cdbd3;
+    }
+
+    .pill-delivered {
+      background: rgba(30, 142, 90, 0.2);
+      color: #4ade80;
+    }
+
+    .pill-pending {
+      background: rgba(201, 138, 0, 0.2);
+      color: #f0b429;
+    }
+
+    .pill-exception {
+      background: rgba(217, 54, 54, 0.2);
+      color: #f87171;
+    }
+
+    .pill-customs {
+      background: rgba(255, 255, 255, 0.12);
+      color: #d7dee8;
+    }
+
+    .steplist {
+      list-style: none;
+      margin: 0 0 4px;
+      padding: 0;
+    }
+
+    .steplist li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 0;
+      font-size: 13px;
+    }
+
+    .step-mark {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .step-done .step-mark {
+      background: var(--teal);
+      color: #0e1420;
+    }
+
+    .step-current .step-mark {
+      background: var(--orange);
+      color: #0e1420;
+    }
+
+    .step-upcoming .step-mark {
+      border: 1.5px solid #3a4658;
+    }
+
+    .step-done span {
+      color: #d7dee8;
+    }
+
+    .step-current span {
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .step-upcoming span {
+      color: #5c6b80;
+    }
+
+    .exception-banner {
+      background: rgba(217, 54, 54, 0.13);
+      border: 1px solid rgba(217, 54, 54, 0.4);
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-size: 12.5px;
+      color: #f87171;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .cta-band {
+      background: var(--orange);
+      color: #fff;
+    }
+
+    .cta-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 64px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .cta-inner h2 {
+      font-family: var(--font-head);
+      font-size: 30px;
+      margin: 0;
+      max-width: 520px;
+    }
+
+    .cta-actions {
+      display: flex;
+      gap: 14px;
+    }
+
+    .cta-band .btn-outline {
+      border-color: #fff;
+      color: #fff;
+    }
+
+    .cta-band .btn-outline:hover {
+      background: #fff;
+      color: var(--orange);
+    }
+
+    .cta-band .btn-primary {
+      background: var(--ink);
+    }
+
+    .site-footer {
+      background: var(--navy);
+      color: #b8c4d6;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 56px 28px 24px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer-brand {
+      color: #fff;
+    }
+
+    .footer-brand .brand {
+      width: 6rem;
+      height: auto;
+      border-radius: 8px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .footer-brand p {
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: #8fa0b8;
+      max-width: 280px;
+      margin-top: 14px;
+    }
+
+    .footer-col h5 {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6e80a0;
+      margin: 0 0 16px;
+    }
+
+    .footer-col a,
+    .footer-col p {
+      display: block;
+      font-size: 14px;
+      color: #c7d0de;
+      margin-bottom: 11px;
+    }
+
+    .footer-col a:hover {
+      color: var(--orange);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid #1f3055;
+      padding-top: 22px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+      color: #6e80a0;
+      font-family: var(--font-mono);
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .footer-bottom .ops-link {
+      color: #5a6b8a;
+      border-bottom: 1px dotted #3a4a6a;
+    }
+
+    .footer-bottom .ops-link:hover {
+      color: var(--orange);
+      border-color: var(--orange);
+    }
+
+    .stamp-ink {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 2px solid var(--orange);
+      color: var(--orange);
+      border-radius: 4px;
+      padding: 5px 10px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.08em;
+      transform: rotate(-2deg);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    /* ============================================================ ADMIN / OPS CONTROL TOWER ============================================================ */
+    .admin-shell {
+      display: none;
+      min-height: 100vh;
+      background: #f0f2f5;
+    }
+
+    .admin-shell.visible {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 230px;
+      flex-shrink: 0;
+      background: var(--ink);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-brand {
+      padding: 22px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #212b3b;
+    }
+
+    .sidebar-brand .mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 7px;
+      background: var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .sidebar-brand .mark svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .sidebar-brand b {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 14.5px;
+    }
+
+    .sidebar-brand small {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      color: #8090a8;
+      letter-spacing: 0.06em;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 12px;
+    }
+
+    .snav-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 11px 12px;
+      border-radius: 6px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #9aa6ba;
+      margin-bottom: 3px;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+    }
+
+    .snav-item svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      opacity: 0.85;
+    }
+
+    .snav-item:hover {
+      background: #1a2333;
+      color: #fff;
+    }
+
+    .snav-item.active {
+      background: var(--orange);
+      color: #fff;
+    }
+
+    .snav-badge {
+      margin-left: auto;
+      background: rgba(255, 255, 255, 0.18);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    .sidebar-foot {
+      padding: 16px 20px;
+      border-top: 1px solid #212b3b;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: #5c6b80;
+      line-height: 1.5;
+    }
+
+    .admin-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .admin-topbar {
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      padding: 18px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .admin-topbar h1 {
+      font-family: var(--font-head);
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .admin-topbar p {
+      font-size: 12.5px;
+      color: var(--slate);
+      margin: 2px 0 0;
+    }
+
+    .admin-body {
+      padding: 28px 30px 60px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .kpi-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .kpi-card b {
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    .kpi-card span {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--slate);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .kpi-card.accent-orange b {
+      color: var(--orange);
+    }
+
+    .kpi-card.accent-teal b {
+      color: var(--teal);
+    }
+
+    .kpi-card.accent-green b {
+      color: var(--green);
+    }
+
+    .kpi-card.accent-red b {
+      color: var(--red);
+    }
+
+    .kpi-card.accent-navy b {
+      color: var(--navy);
+    }
+
+    .breakdown-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .mini-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 0;
+      font-size: 12.5px;
+    }
+
+    .mini-bar-label {
+      width: 110px;
+      flex-shrink: 0;
+      font-family: var(--font-mono);
+      color: var(--slate);
+      font-size: 11.5px;
+    }
+
+    .mini-bar-track {
+      flex: 1;
+      height: 8px;
+      background: var(--paper);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .mini-bar-fill {
+      height: 100%;
+      background: var(--teal);
+      border-radius: 4px;
+    }
+
+    .mini-bar-count {
+      width: 26px;
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--ink);
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-bottom: 22px;
+    }
+
+    .panel-head {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .panel-head h3 {
+      font-family: var(--font-head);
+      font-size: 15.5px;
+      margin: 0;
+    }
+
+    .panel-head p {
+      font-size: 12.5px;
+      color: var(--slate);
+      margin: 3px 0 0;
+    }
+
+    .panel-body {
+      padding: 22px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--slate);
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      border: 1.5px solid var(--line);
+      border-radius: 5px;
+      padding: 9px 11px;
+      font-size: 13.5px;
+      font-family: var(--font-body);
+      background: #fff;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--orange);
+    }
+
+    .tbl-wrap {
+      overflow-x: auto;
+    }
+
+    table.dt {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    table.dt th {
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--slate);
+      padding: 10px 12px;
+      border-bottom: 2px solid var(--ink);
+      white-space: nowrap;
+    }
+
+    table.dt td {
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+    }
+
+    table.dt tr:hover td {
+      background: var(--paper);
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+    }
+
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 4px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+    .badge-transit {
+      background: rgba(14, 165, 160, 0.13);
+      color: #0b8b87;
+    }
+
+    .badge-delivered {
+      background: rgba(30, 142, 90, 0.15);
+      color: var(--green);
+    }
+
+    .badge-pending {
+      background: rgba(201, 138, 0, 0.15);
+      color: var(--amber);
+    }
+
+    .badge-exception {
+      background: rgba(217, 54, 54, 0.13);
+      color: var(--red);
+    }
+
+    .badge-customs {
+      background: rgba(11, 30, 61, 0.1);
+      color: var(--navy);
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 5px;
+      border: 1px solid var(--line);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-btn:hover {
+      border-color: var(--orange);
+    }
+
+    .icon-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .dropzone {
+      border: 2px dashed var(--line);
+      border-radius: 8px;
+      padding: 36px;
+      text-align: center;
+      background: var(--paper);
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .dropzone.drag {
+      border-color: var(--orange);
+      background: #fff3ea;
+    }
+
+    .dropzone svg {
+      width: 34px;
+      height: 34px;
+      color: var(--slate);
+      margin-bottom: 12px;
+    }
+
+    .dropzone h4 {
+      font-family: var(--font-head);
+      font-size: 15px;
+      margin: 0 0 4px;
+    }
+
+    .dropzone p {
+      font-size: 12.5px;
+      color: var(--slate);
+      margin: 0;
+    }
+
+    .dropzone input {
+      display: none;
+    }
+
+    .csv-schema {
+      background: var(--ink);
+      color: #d7dee8;
+      border-radius: 6px;
+      padding: 14px 16px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.8;
+      overflow-x: auto;
+      margin-top: 14px;
+    }
+
+    .csv-schema .req {
+      color: #4cdbd3;
+    }
+
+    .csv-schema .opt {
+      color: #8090a8;
+    }
+
+    .upload-result {
+      margin-top: 16px;
+    }
+
+    .result-summary {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .result-chip {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .chip-ok {
+      background: rgba(30, 142, 90, 0.12);
+      color: var(--green);
+    }
+
+    .chip-new {
+      background: rgba(14, 165, 160, 0.12);
+      color: #0b8b87;
+    }
+
+    .chip-err {
+      background: rgba(217, 54, 54, 0.12);
+      color: var(--red);
+    }
+
+    .chip-warn {
+      background: rgba(201, 138, 0, 0.12);
+      color: var(--amber);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 20, 32, 0.6);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      z-index: 200;
+      padding: 40px 20px;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.visible {
+      display: flex;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 680px;
+      overflow: hidden;
+    }
+
+    .modal-head {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-head h3 {
+      font-family: var(--font-head);
+      font-size: 17px;
+      margin: 0;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--slate);
+      line-height: 1;
+      padding: 4px;
+    }
+
+    .modal-body {
+      padding: 24px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .modal-foot {
+      padding: 16px 24px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .exception-fields {
+      background: #fff6f0;
+      border: 1px solid #ffd8b8;
+      border-radius: 6px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+
+    .exception-fields .field-row {
+      margin-bottom: 10px;
+    }
+
+    .history-timeline {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .history-timeline li {
+      display: grid;
+      grid-template-columns: 16px 1fr;
+      gap: 12px;
+      padding-bottom: 16px;
+      position: relative;
+    }
+
+    .history-timeline li:not(:last-child)::before {
+      content: "";
+      position: absolute;
+      left: 6.5px;
+      top: 16px;
+      bottom: 0;
+      width: 1px;
+      background: var(--line);
+    }
+
+    .ht-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--navy);
+      margin-top: 2px;
+    }
+
+    .history-timeline li:first-child .ht-dot {
+      background: var(--orange);
+    }
+
+    .ht-body b {
+      display: block;
+      font-size: 13.5px;
+    }
+
+    .ht-body span {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--slate);
+    }
+
+    .ht-body p {
+      font-size: 12.5px;
+      color: var(--slate);
+      margin: 4px 0 0;
+    }
+
+    .ht-source {
+      display: inline-block;
+      margin-top: 4px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--slate);
+      background: var(--paper);
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+
+    .toast-wrap {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 400;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background: var(--ink);
+      color: #fff;
+      padding: 13px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-left: 4px solid var(--orange);
+      animation: slideIn 0.2s ease;
+      max-width: 340px;
+    }
+
+    .toast.err {
+      border-color: var(--red);
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--slate);
+    }
+
+    .empty-state svg {
+      width: 36px;
+      height: 36px;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+
+    .empty-state h4 {
+      font-family: var(--font-head);
+      font-size: 15px;
+      color: var(--ink);
+      margin: 0 0 4px;
+    }
+
+    .empty-state p {
+      font-size: 13px;
+      margin: 0;
+    }
+
+    @media (max-width: 960px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links,
+      .tel-chip {
+        display: none;
+      }
+
+      .flow {
+        grid-template-columns: 1fr 1fr;
+        row-gap: 28px;
+      }
+
+      .flow::before {
+        display: none;
+      }
+
+      .stats-inner {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .track-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .manifest-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .breakdown-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .sidebar {
+        position: fixed;
+        left: -230px;
+        transition: 0.2s;
+        z-index: 300;
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell" id="appShell">
+    <button class="back-pill" id="backPill">← Back to website</button>
+
+    <!-- ================= PUBLIC SITE ================= -->
+    <div id="siteView">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <div class="brand">
+            <span class="mark"><img class="header-logo" src="https://res.cloudinary.com/oiig0qbj/image/upload/v1788261881/SGShips_logo.png" alt="site-logo"></span>
+            <!-- <span>SG<span class="go">Ships</span></span> -->
+          </div>
+          <nav class="nav-links">
+            <a href="#services">Services</a>
+            <a href="#how">How it works</a>
+            <a href="#coverage">Coverage</a>
+            <a href="#track">Track shipment</a>
+            <a href="#contact">Contact</a>
+          </nav>
+          <div class="header-cta">
+            <span class="tel-chip">📞 +91 77388 45131</span>
+            <a href="#contact" class="btn btn-primary btn-sm">Get a rate quote</a>
+          </div>
+        </div>
+      </header>
+
+      <section class="hero">
+        <div class="hero-inner">
+          <div>
+            <div class="eyebrow">Cross-border fulfillment &amp; delivery</div>
+            <h1>
+              An e-commerce focused international shipping service,
+              <span>pickup to delivery.</span>
+            </h1>
+            <p class="sub">
+              SGShips moves Amazon FBA shipments and B2C
+              international parcels across the world — with one standardized
+              tracking number, no matter which carrier is actually carrying
+              it.
+            </p>
+            <div class="hero-actions">
+              <a href="#contact" class="btn btn-primary">Get a rate quote</a>
+              <a href="#track" class="btn btn-outline" style="border-color: #fff; color: #fff">Track a shipment</a>
+            </div>
+            <div class="hero-stamps">
+              <span class="stamp">Amazon FBA Ready</span>
+              <span class="stamp">B2C · Worldwide</span>
+              <span class="stamp">Customs Clearance</span>
+            </div>
+          </div>
+
+          <div class="awb-card">
+            <div class="awb-top">
+              <div>
+                <div class="awb-label">SGX Tracking Number</div>
+                <div class="awb-code">SGX-2026-00001</div>
+              </div>
+              <div class="awb-label" style="text-align: right">
+                Service<br /><b style="color: var(--ink); font-family: var(--font-body)">Amazon FBA</b>
+              </div>
+            </div>
+            <div class="barcode" id="barcodeBars"></div>
+            <div class="awb-route">
+              <span class="awb-dot"></span>
+              <span class="awb-dashline"><span class="awb-plane">✈</span></span>
+              <span class="awb-dot end"></span>
+            </div>
+            <div class="awb-cities">
+              <div><b>BOM</b><br />Mumbai, India</div>
+              <div style="text-align: right">
+                <b>JFK</b><br />New York, USA
+              </div>
+            </div>
+            <div class="awb-grid">
+              <div class="awb-field"><span>Carrier</span><b>DHL</b></div>
+              <div class="awb-field">
+                <span>Status</span><b style="color: var(--teal)">In Transit</b>
+              </div>
+              <div class="awb-field">
+                <span>Carrier Tracking No.</span><b>1234567890</b>
+              </div>
+              <div class="awb-field"><span>ETA</span><b>3 days</b></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="logo-strip">
+        <div class="logo-strip-inner">
+          <span class="logo-strip-label">Integrated with</span>
+          <span class="courier-chip">DHL</span>
+          <span class="courier-chip">Aramex</span>
+          <span class="courier-chip">FedEx</span>
+          <span class="courier-chip">UPS</span>
+          <span class="logo-strip-label" style="margin-left: auto">+ more carriers coming</span>
+        </div>
+      </div>
+
+      <section class="section" id="services">
+        <div class="section-head">
+          <div class="section-eyebrow">What we do</div>
+          <h2>End-to-end pickup and delivery, worldwide</h2>
+          <p class="lead">
+            SGShips is an e-commerce focused international shipping
+            service providing end-to-end pickup and delivery across the world.
+          </p>
+        </div>
+        <div class="manifest">
+          <div class="manifest-row">
+            <div class="manifest-num">01<b>INT'L</b></div>
+            <div class="manifest-title">International Shipping</div>
+            <div class="manifest-desc">
+              Cross-border freight and parcel movement between origin and
+              destination country, on air or ground lanes.
+            </div>
+            <div class="manifest-tag">Freight</div>
+          </div>
+          <div class="manifest-row">
+            <div class="manifest-num">02<b>FBA</b></div>
+            <div class="manifest-title">Amazon FBA</div>
+            <div class="manifest-desc">
+              Inbound delivery straight into Amazon fulfillment centers, ready
+              for FBA sellers shipping across marketplaces.
+            </div>
+            <div class="manifest-tag">FC Delivery</div>
+          </div>
+          <div class="manifest-row">
+            <div class="manifest-num">03<b>B2C</b></div>
+            <div class="manifest-title">B2C Delivery</div>
+            <div class="manifest-desc">
+              Direct-to-consumer international delivery for your own
+              storefront or marketplace orders.
+            </div>
+            <div class="manifest-tag">Door → Door</div>
+          </div>
+          <div class="manifest-row">
+            <div class="manifest-num">04<b>DDP</b></div>
+            <div class="manifest-title">Customs Clearance</div>
+            <div class="manifest-desc">
+              Import and export customs handled end to end, so shipments don't
+              stall at the border.
+            </div>
+            <div class="manifest-tag">Compliance</div>
+          </div>
+          <div class="manifest-row">
+            <div class="manifest-num">05<b>LMD</b></div>
+            <div class="manifest-title">Last Mile Delivery</div>
+            <div class="manifest-desc">
+              Final handoff to the local courier network, tracked through to
+              the consignee's door.
+            </div>
+            <div class="manifest-tag">Last Mile</div>
+          </div>
+          <div class="manifest-row">
+            <div class="manifest-num">06<b>GSS</b></div>
+            <div class="manifest-title">Global Shipping Solutions</div>
+            <div class="manifest-desc">
+              One standardized tracking experience across every carrier and
+              lane we operate.
+            </div>
+            <div class="manifest-tag">Live Status</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="how" style="padding-top: 0">
+        <div class="section-head">
+          <div class="section-eyebrow">Lifecycle</div>
+          <h2>Pickup to consignee, one status at a time</h2>
+          <p class="lead">
+            Every shipment moves through the same standardized stages —
+            whichever carrier is actually carrying it.
+          </p>
+        </div>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-dot">01</div>
+            <h4>Pickup received</h4>
+            <p>
+              Collected from the shipper and logged into the SGShips
+              network.
+            </p>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">02</div>
+            <h4>In transit</h4>
+            <p>
+              Moving between origin, transit hubs and the destination country.
+            </p>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">03</div>
+            <h4>Customs clearance</h4>
+            <p>Import documentation and duties processed at the border.</p>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">04</div>
+            <h4>Out for delivery</h4>
+            <p>Handed to the last-mile courier for final delivery.</p>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">05</div>
+            <h4>Delivered</h4>
+            <p>
+              Signed, scanned and closed out against the consignee on record.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div class="stats-band" id="coverage">
+        <div class="stats-inner">
+          <div class="stat"><b>190+</b><span>Countries served</span></div>
+          <div class="stat"><b>4</b><span>Carriers integrated</span></div>
+          <div class="stat"><b>2</b><span>Core service lines</span></div>
+          <div class="stat"><b>99.2%</b><span>On-time last mile</span></div>
+        </div>
+      </div>
+
+      <section class="section" id="track">
+        <div class="track-panel">
+          <div>
+            <div class="section-eyebrow" style="color: var(--orange)">
+              Track your shipment
+            </div>
+            <h3>Where's my shipment?</h3>
+            <p>
+              Enter either your SGShips tracking number or your
+              carrier's tracking number — we'll find it either way.
+            </p>
+            <div class="track-form">
+              <input class="track-input" id="pubTrackInput" placeholder="e.g. SGX-2026-00001 or a DHL tracking No." />
+              <button class="btn btn-primary" id="pubTrackBtn">Track</button>
+            </div>
+            <div class="track-hint">
+              Works with SGX numbers or DHL / Aramex / FedEx / UPS tracking
+              numbers
+            </div>
+          </div>
+          <div class="track-result" id="pubTrackResult">
+            <div class="empty">Tracking details will appear here</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="cta-band" id="contact">
+        <div class="cta-inner">
+          <h2>Ready to move your next shipment?</h2>
+          <div class="cta-actions">
+            <a href="tel:+917738845131" class="btn btn-primary">Call +91 77388 45131</a>
+            <a href="mailto:support@sgships.com" class="btn btn-outline">Email support</a>
+          </div>
+        </div>
+      </div>
+
+      <footer class="site-footer">
+        <div class="footer-inner">
+          <div class="footer-grid">
+            <div class="footer-brand">
+              <div class="brand" style="color: #fff">
+                <img class="header-logo" src="https://res.cloudinary.com/oiig0qbj/image/upload/v1788261881/SGShips_logo.png" alt="site-logo">
+                <!-- <span>SG<span class="go">Ships</span></span> -->
+              </div>
+              <p>
+                E-commerce focused international shipping — end-to-end pickup
+                and delivery, on one standardized tracking number.
+              </p>
+              <div class="stamp-ink" style="margin-top: 16px">
+                Worldwide Delivery
+              </div>
+            </div>
+            <div class="footer-col">
+              <h5>Services</h5>
+              <a href="#services">International Shipping</a><a href="#services">Amazon FBA</a><a href="#services">B2C
+                Delivery</a><a href="#services">Customs Clearance</a>
+            </div>
+            <div class="footer-col">
+              <h5>Company</h5>
+              <a href="#how">How it works</a><a href="#coverage">Coverage</a><a href="#track">Track a shipment</a>
+            </div>
+            <div class="footer-col">
+              <h5>Contact</h5>
+              <p style="margin-bottom: 8px">📞 +91 77388 45131</p>
+              <p>✉️ support@sgships.com</p>
+            </div>
+          </div>
+          <div class="footer-bottom">
+            <span>© 2026 SGShips · Indigateway Ecom Pvt Ltd</span>
+            <a href="#" class="ops-link" id="opsPortalLink">Operations Portal →</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- ================= LOGIN ================= -->
+    <div class="login-shell" id="loginShell">
+      <div class="login-card">
+        <div class="mark">
+          <img src="https://res.cloudinary.com/oiig0qbj/image/upload/v1788261881/SGShips_logo.png" alt="site-logo">
+        </div>
+        <h2>Sign in</h2>
+        <p>
+          Operations Control Tower and customer shipment access — F23
+          role-based logins (Admin / Operations / Viewer / Customer).
+        </p>
+        <label>Username</label>
+        <input type="text" id="loginUsername" autocomplete="off" placeholder="e.g. admin" />
+        <label>Password</label>
+        <input type="password" id="loginPassword" autocomplete="off" placeholder="Password" />
+        <div class="login-error" id="loginError">
+          Incorrect username or password.
+        </div>
+        <button class="btn btn-primary btn-block" id="loginSubmit">
+          Sign in
+        </button>
+        <a href="#" class="login-back" id="loginBack">← Back to website</a>
+      </div>
+    </div>
+
+    <!-- ================= CUSTOMER PORTAL ================= -->
+    <div class="customer-shell" id="customerShell">
+      <div class="customer-topbar">
+        <div class="customer-topbar-inner">
+          <div class="brand" style="color: #fff">
+            <img class="footer-logo" src="https://res.cloudinary.com/oiig0qbj/image/upload/v1788261881/SGShips_logo.png" alt="site-logo">
+          </div>
+          <button class="cc-logout" id="customerLogout">Log out</button>
+        </div>
+      </div>
+      <div class="customer-body">
+        <h2 id="customerGreeting">My Shipments</h2>
+        <p class="sub-lead">
+          Every shipment linked to your account — no tracking number needed.
+        </p>
+        <div id="customerShipmentList"></div>
+      </div>
+    </div>
+
+    <!-- ================= OPERATIONS CONTROL TOWER ================= -->
+    <div id="adminView" class="admin-shell">
+      <div style="display: flex; width: 100%">
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-brand">
+            <span class="mark"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 8L12 3L21 8V16L12 21L3 16V8Z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round" />
+                <path d="M3 8L12 13L21 8" stroke="#fff" stroke-width="1.6" stroke-linejoin="round" />
+                <path d="M12 13V21" stroke="#fff" stroke-width="1.6" />
+              </svg></span>
+            <div><b>Control Tower</b><small>OPERATIONS PORTAL</small></div>
+          </div>
+          <nav class="sidebar-nav">
+            <button class="snav-item active" data-panel="panelDash">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="3" y="3" width="7" height="9" rx="1" />
+                <rect x="14" y="3" width="7" height="5" rx="1" />
+                <rect x="14" y="12" width="7" height="9" rx="1" />
+                <rect x="3" y="16" width="7" height="5" rx="1" />
+              </svg>
+              Dashboard
+            </button>
+            <button class="snav-item" data-panel="panelShipments">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="3" y="7" width="18" height="13" rx="1" />
+                <path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2" />
+              </svg>
+              Shipments
+            </button>
+            <button class="snav-item" data-panel="panelExceptions">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M12 9v4" />
+                <circle cx="12" cy="16.5" r=".5" />
+                <path d="M10.3 3.9L2.5 17a1.7 1.7 0 001.5 2.5h16a1.7 1.7 0 001.5-2.5L13.7 3.9a1.7 1.7 0 00-3.4 0z" />
+              </svg>
+              Exceptions <span class="snav-badge" id="exceptionBadge">0</span>
+            </button>
+            <button class="snav-item" data-panel="panelBulk">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M12 3v12" />
+                <path d="M7 10l5 5 5-5" />
+                <path d="M4 19h16" />
+              </svg>
+              Bulk CSV Update
+            </button>
+            <button class="snav-item" data-panel="panelCourier">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <circle cx="6" cy="12" r="3" />
+                <circle cx="18" cy="12" r="3" />
+                <path d="M9 12h6" />
+              </svg>
+              Carrier Linking
+            </button>
+            <button class="snav-item" data-panel="panelUsers" id="navUsers">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                <path d="M16 3.13a4 4 0 010 7.75" />
+              </svg>
+              Users
+            </button>
+          </nav>
+          <div class="user-chip" id="userChip">
+            <div class="name" id="userChipName">—</div>
+            <span class="role-badge" id="userChipRole">—</span>
+            <button id="logoutBtn">Log out →</button>
+          </div>
+        </aside>
+
+        <main class="admin-main">
+          <div class="admin-topbar">
+            <div>
+              <h1 id="topbarTitle">Dashboard</h1>
+              <p id="topbarSub">
+                Live overview of every shipment in the network
+              </p>
+            </div>
+            <button class="btn btn-primary btn-sm" id="topAddShipment">
+              + New shipment
+            </button>
+          </div>
+          <div class="admin-body">
+            <div class="admin-panel" id="panelDash">
+              <div class="kpi-grid" id="kpiGrid"></div>
+              <div class="breakdown-grid">
+                <div class="panel">
+                  <div class="panel-head">
+                    <div>
+                      <h3>Shipments by carrier</h3>
+                    </div>
+                  </div>
+                  <div class="panel-body" id="carrierBreakdown"></div>
+                </div>
+                <div class="panel">
+                  <div class="panel-head">
+                    <div>
+                      <h3>Shipments by status</h3>
+                    </div>
+                  </div>
+                  <div class="panel-body" id="statusBreakdown"></div>
+                </div>
+              </div>
+              <div class="panel">
+                <div class="panel-head">
+                  <div>
+                    <h3>Recent activity</h3>
+                    <p>Most recently updated shipments across the network</p>
+                  </div>
+                  <button class="btn btn-ghost btn-sm" data-goto="panelShipments">
+                    View all →
+                  </button>
+                </div>
+                <div class="panel-body" style="padding: 0">
+                  <div class="tbl-wrap">
+                    <table class="dt" id="recentTable"></table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-panel" id="panelShipments" style="display: none">
+              <div class="panel">
+                <div class="panel-head">
+                  <div>
+                    <h3>All shipments</h3>
+                    <p id="shipCount">0 shipments</p>
+                  </div>
+                  <div style="display: flex; gap: 10px; flex-wrap: wrap">
+                    <input id="searchInput" placeholder="Search SGX no., carrier tracking no., consignee…" style="
+                          border: 1.5px solid var(--line);
+                          border-radius: 5px;
+                          padding: 9px 12px;
+                          font-size: 13px;
+                          width: 250px;
+                        " />
+                    <select id="filterCarrier" style="
+                          border: 1.5px solid var(--line);
+                          border-radius: 5px;
+                          padding: 9px 12px;
+                          font-size: 13px;
+                        "></select>
+                    <select id="filterStatus" style="
+                          border: 1.5px solid var(--line);
+                          border-radius: 5px;
+                          padding: 9px 12px;
+                          font-size: 13px;
+                        "></select>
+                  </div>
+                </div>
+                <div class="panel-body" style="padding: 0">
+                  <div class="tbl-wrap">
+                    <table class="dt" id="shipmentsTable"></table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-panel" id="panelExceptions" style="display: none">
+              <div class="panel">
+                <div class="panel-head">
+                  <div>
+                    <h3>Open exceptions</h3>
+                    <p>
+                      Shipments currently flagged for operational intervention
+                    </p>
+                  </div>
+                </div>
+                <div class="panel-body" style="padding: 0">
+                  <div class="tbl-wrap">
+                    <table class="dt" id="exceptionsTable"></table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-panel" id="panelBulk" style="display: none">
+              <div class="panel">
+                <div class="panel-head">
+                  <div>
+                    <h3>Bulk update via CSV</h3>
+                    <p>
+                      Upload carrier tracking reports to update many shipments
+                      at once
+                    </p>
+                  </div>
+                  <button class="btn btn-ghost btn-sm" id="downloadTemplate">
+                    Download CSV template
+                  </button>
+                </div>
+                <div class="panel-body">
+                  <div class="dropzone" id="dropzone">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M12 3v12" />
+                      <path d="M7 10l5 5 5-5" />
+                      <path d="M5 21h14" />
+                    </svg>
+                    <h4>Drop a CSV file here, or click to browse</h4>
+                    <p>
+                      internal_tracking + carrier + carrier_tracking + status
+                      are required — a new shipment is created automatically
+                      if the internal tracking number doesn't exist yet
+                    </p>
+                    <input type="file" id="csvFileInput" accept=".csv" />
+                  </div>
+                  <div class="csv-schema">
+                    <span class="req">internal_tracking</span>,
+                    <span class="req">carrier</span>,
+                    <span class="req">carrier_tracking</span>,
+                    <span class="req">status</span>,
+                    <span class="opt">origin</span>,
+                    <span class="opt">destination</span>,
+                    <span class="opt">last_update</span>,
+                    <span class="opt">event_location</span>,
+                    <span class="opt">event_datetime</span><br />
+                    <span style="color: #5c6b80">— bold columns required · status must be one of: Pickup
+                      Received, Received at Origin, In Transit, Inbound at
+                      Hub, Customs Clearance, Out for Delivery, Delivered,
+                      Exception · duplicate rows for the same
+                      internal_tracking are flagged and only the first is
+                      applied</span>
+                  </div>
+                  <div class="upload-result" id="uploadResult"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-panel" id="panelCourier" style="display: none">
+              <div class="panel">
+                <div class="panel-head">
+                  <div>
+                    <h3>
+                      Map internal tracking number → carrier tracking number
+                    </h3>
+                    <p>
+                      Attach or update which carrier is actually moving a
+                      given SGX shipment
+                    </p>
+                  </div>
+                </div>
+                <div class="panel-body">
+                  <div class="field-row" style="
+                        grid-template-columns: 1fr 1fr 1fr 140px;
+                        align-items: end;
+                      ">
+                    <div class="field">
+                      <label>SGX tracking number</label><input id="linkInternalId" placeholder="SGX-2026-00001" />
+                    </div>
+                    <div class="field">
+                      <label>Carrier</label>
+                      <select id="linkCourier">
+                        <option>DHL</option>
+                        <option>Aramex</option>
+                        <option>FedEx</option>
+                        <option>UPS</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label>Carrier tracking number</label><input id="linkCourierId" placeholder="e.g. 1234567890" />
+                    </div>
+                    <button class="btn btn-primary" id="linkSubmit">
+                      Link carrier
+                    </button>
+                  </div>
+                  <p style="
+                        font-size: 12px;
+                        color: var(--slate);
+                        margin: 4px 0 20px;
+                      ">
+                    DHL and Aramex are the initial supported carriers; FedEx,
+                    UPS and others are tracked here as reference data pending
+                    live API integration.
+                  </p>
+                  <div class="tbl-wrap">
+                    <table class="dt" id="courierTable"></table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-panel" id="panelUsers" style="display: none">
+              <div class="panel">
+                <div class="panel-head">
+                  <div>
+                    <h3>User accounts</h3>
+                    <p>
+                      F23 — Admin, Operations, Viewer and Customer role
+                      management
+                    </p>
+                  </div>
+                  <button class="btn btn-primary btn-sm" id="addUserBtn">
+                    + New user
+                  </button>
+                </div>
+                <div class="panel-body" style="padding: 0">
+                  <div class="tbl-wrap">
+                    <table class="dt" id="usersTable"></table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div class="toast-wrap" id="toastWrap"></div>
+
+    <!-- Shipment modal -->
+    <div class="modal-overlay" id="shipModalOverlay">
+      <div class="modal">
+        <div class="modal-head">
+          <h3 id="shipModalTitle">New shipment</h3>
+          <button class="modal-close" id="shipModalClose">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="field-row" style="grid-template-columns: 1fr 1fr">
+            <div class="field">
+              <label>SGX tracking number</label><input id="fInternalId" placeholder="Auto-generated if blank" />
+            </div>
+            <div class="field">
+              <label>Service type</label><select id="fServiceType">
+                <option>B2C</option>
+                <option>FBA</option>
+                <option>Forwarding</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row" style="grid-template-columns: 1fr 1fr">
+            <div class="field">
+              <label>Origin</label><input id="fOrigin" placeholder="City, Country" />
+            </div>
+            <div class="field">
+              <label>Destination</label><input id="fDestination" placeholder="City, Country" />
+            </div>
+          </div>
+          <div class="field-row" style="grid-template-columns: 1fr 1fr">
+            <div class="field">
+              <label>Consignee</label><input id="fConsignee" placeholder="Recipient / FC name" />
+            </div>
+            <div class="field">
+              <label>Carrier</label><select id="fCourier">
+                <option value="">— unassigned —</option>
+                <option>DHL</option>
+                <option>Aramex</option>
+                <option>FedEx</option>
+                <option>UPS</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row" style="grid-template-columns: 1fr 1fr">
+            <div class="field">
+              <label>Carrier tracking number</label><input id="fCourierId" placeholder="Optional" />
+            </div>
+            <div class="field">
+              <label>Update status to</label><select id="fStatus"></select>
+            </div>
+          </div>
+          <div class="field-row" style="grid-template-columns: 1fr 1fr">
+            <div class="field">
+              <label>Event location</label><input id="fLocation" placeholder="e.g. Mumbai Hub" />
+            </div>
+            <div class="field">
+              <label>Raw carrier event (optional)</label><input id="fCarrierEvent"
+                placeholder="e.g. 'Shipment on hold' from DHL" />
+            </div>
+          </div>
+          <div class="field-row" style="grid-template-columns: 1fr">
+            <div class="field">
+              <label>Customer account (optional)</label><select id="fCustomerAccount">
+                <option value="">— not linked to a customer login —</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom: 16px">
+            <label>Notes</label><textarea id="fNotes" rows="2"
+              placeholder="Optional internal note for this update"></textarea>
+          </div>
+          <div class="readonly-banner" id="fReadonlyBanner" style="display: none">
+            You're signed in as a Viewer — this shipment is read-only.
+          </div>
+
+          <div id="fExceptionWrap" class="exception-fields" style="display: none">
+            <label style="
+                  font-family: var(--font-mono);
+                  font-size: 10.5px;
+                  text-transform: uppercase;
+                  letter-spacing: 0.05em;
+                  color: var(--red);
+                  display: block;
+                  margin-bottom: 10px;
+                ">Exception details</label>
+            <div class="field-row" style="grid-template-columns: 1fr 1fr">
+              <div class="field">
+                <label>Exception type</label>
+                <select id="fExceptionType">
+                  <option>Address Issue</option>
+                  <option>Customs Problem</option>
+                  <option>Documentation Issue</option>
+                  <option>Delivery Failed</option>
+                  <option>Shipment Delayed</option>
+                  <option>Shipment Held</option>
+                  <option>Damaged Shipment</option>
+                  <option>Lost Shipment</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Assigned to</label><input id="fAssignedTo" placeholder="Ops staff name" />
+              </div>
+            </div>
+          </div>
+
+          <div id="fHistoryWrap" style="display: none">
+            <label style="
+                  font-family: var(--font-mono);
+                  font-size: 10.5px;
+                  text-transform: uppercase;
+                  letter-spacing: 0.05em;
+                  color: var(--slate);
+                  display: block;
+                  margin-bottom: 10px;
+                ">Shipment timeline (audit trail)</label>
+            <ul class="history-timeline" id="fHistoryList"></ul>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-ghost btn-sm" id="shipModalCancel">
+            Cancel</button><button class="btn btn-primary btn-sm" id="shipModalSave">
+            Save shipment
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- User modal -->
+    <div class="modal-overlay" id="userModalOverlay">
+      <div class="modal" style="max-width: 440px">
+        <div class="modal-head">
+          <h3 id="userModalTitle">New user</h3>
+          <button class="modal-close" id="userModalClose">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="field" style="margin-bottom: 12px">
+            <label>Username</label><input id="uUsername" placeholder="e.g. priya.ops" />
+          </div>
+          <div class="field" style="margin-bottom: 12px">
+            <label>Password</label><input id="uPassword" placeholder="Set a password" type="text" />
+          </div>
+          <div class="field" style="margin-bottom: 12px">
+            <label>Full name</label><input id="uName" placeholder="Display name" />
+          </div>
+          <div class="field" style="margin-bottom: 12px">
+            <label>Role</label>
+            <select id="uRole">
+              <option>Admin</option>
+              <option>Operations</option>
+              <option>Viewer</option>
+              <option>Customer</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-ghost btn-sm" id="userModalCancel">
+            Cancel</button><button class="btn btn-primary btn-sm" id="userModalSave">
+            Save user
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ============================================================ CONFIG — aligned to PRD v1.0 ============================================================ */
+    const STORAGE_KEY = "shipments-db";
+    const USERS_KEY = "users-db";
+    const META_KEY = "_meta";
+    // F23 — Role-based access
+    const ROLE_PERMS = {
+      Admin: {
+        viewDashboard: true,
+        manageShipments: true,
+        deleteShipments: true,
+        viewExceptions: true,
+        resolveExceptions: true,
+        bulkCSV: true,
+        carrierLinking: true,
+        manageUsers: true,
+      },
+      Operations: {
+        viewDashboard: true,
+        manageShipments: true,
+        deleteShipments: true,
+        viewExceptions: true,
+        resolveExceptions: true,
+        bulkCSV: true,
+        carrierLinking: true,
+        manageUsers: false,
+      },
+      Viewer: {
+        viewDashboard: true,
+        manageShipments: false,
+        deleteShipments: false,
+        viewExceptions: true,
+        resolveExceptions: false,
+        bulkCSV: false,
+        carrierLinking: false,
+        manageUsers: false,
+      },
+    };
+    let currentUser = null;
+    // F05 — Standard Shipment Statuses (normalized, carrier-agnostic)
+    const MAIN_FLOW = [
+      "Pickup Received",
+      "Received at Origin",
+      "In Transit",
+      "Inbound at Hub",
+      "Customs Clearance",
+      "Out for Delivery",
+      "Delivered",
+    ];
+    const STATUS_STAGES = [...MAIN_FLOW, "Exception"];
+    const CARRIERS = ["DHL", "Aramex", "FedEx", "UPS", "Other"];
+
+    const STATUS_BADGE = (s) => {
+      if (s === "Delivered") return "badge-delivered";
+      if (s === "Exception") return "badge-exception";
+      if (s === "Pickup Received") return "badge-pending";
+      if (s === "Customs Clearance") return "badge-customs";
+      return "badge-transit";
+    };
+    const STATUS_PILL = (s) => {
+      if (s === "Delivered") return "pill-delivered";
+      if (s === "Exception") return "pill-exception";
+      if (s === "Pickup Received") return "pill-pending";
+      if (s === "Customs Clearance") return "pill-customs";
+      return "pill-transit";
+    };
+
+    let DB = {};
+    let editingId = null;
+
+    /* ============================================================ STORAGE ============================================================ */
+    async function loadDB() {
+      try {
+        const res = await window.storage.get(STORAGE_KEY, true);
+        DB = res && res.value ? JSON.parse(res.value) : {};
+      } catch (e) {
+        DB = {};
+      }
+      if (Object.keys(DB).filter((k) => k !== META_KEY).length === 0) {
+        seedDemoData();
+        await saveDB();
+      }
+    }
+    async function saveDB() {
+      // try {
+      //   await window.storage.set(STORAGE_KEY, JSON.stringify(DB), true);
+      // } catch (e) {
+      //   toast(
+      //     "Couldn't save — storage error. Your change is kept for this session only.",
+      //     true,
+      //   );
+      // }
+    }
+    function shipmentList() {
+      return Object.keys(DB)
+        .filter((k) => k !== META_KEY)
+        .map((k) => DB[k]);
+    }
+
+    /* ---- USERS (F23) ---- */
+    let USERS = {};
+    async function loadUsers() {
+      try {
+        const res = await window.storage.get(USERS_KEY, true);
+        USERS = res && res.value ? JSON.parse(res.value) : {};
+      } catch (e) {
+        USERS = {};
+      }
+      if (Object.keys(USERS).length === 0) {
+        seedUsers();
+        await saveUsers();
+      }
+    }
+    async function saveUsers() {
+      // try {
+      //   await window.storage.set(USERS_KEY, JSON.stringify(USERS), true);
+      // } catch (e) {
+      //   toast("Couldn't save user accounts — storage error.", true);
+      // }
+    }
+    function seedUsers() {
+      USERS = {
+        admin: {
+          username: "admin",
+          password: "admin123",
+          name: "Admin User",
+          role: "Admin",
+        },
+        ops: {
+          username: "ops",
+          password: "ops123",
+          name: "Ops Staff",
+          role: "Operations",
+        },
+        viewer: {
+          username: "viewer",
+          password: "viewer123",
+          name: "Viewer Account",
+          role: "Viewer",
+        },
+        customer1: {
+          username: "customer1",
+          password: "customer123",
+          name: "Sarah Whitfield",
+          role: "Customer",
+        },
+      };
+    }
+
+    function nextInternalId() {
+      const meta = DB[META_KEY] || { counter: 0 };
+      meta.counter = (meta.counter || 0) + 1;
+      DB[META_KEY] = meta;
+      const year = new Date().getFullYear();
+      return `SGX-${year}-${String(meta.counter).padStart(5, "0")}`;
+    }
+
+    function seedDemoData() {
+      const now = Date.now();
+      const mk = (
+        id,
+        consignee,
+        origin,
+        dest,
+        service,
+        courier,
+        courierId,
+        hist,
+        exception,
+        customerUsername,
+      ) => {
+        DB[id] = {
+          internalId: id,
+          consignee,
+          origin,
+          destination: dest,
+          serviceType: service,
+          courier: courier || "",
+          courierTrackingNumber: courierId || "",
+          status: hist[hist.length - 1].status,
+          history: hist,
+          exception: exception || null,
+          customerUsername: customerUsername || "",
+          createdAt: hist[0].date,
+          updatedAt: hist[hist.length - 1].date,
+        };
+      };
+      DB[META_KEY] = { counter: 4 };
+      mk(
+        "SGX-2026-00001",
+        "Amazon FC — EWR9",
+        "Mumbai, India",
+        "New York, USA",
+        "FBA",
+        "DHL",
+        "1234567890",
+        [
+          {
+            status: "Pickup Received",
+            carrierEvent: "",
+            location: "Mumbai, India",
+            date: iso(now - 6 * 86400000),
+            notes: "Booking confirmed",
+            source: "System",
+          },
+          {
+            status: "Received at Origin",
+            carrierEvent: "Shipment received at DHL gateway",
+            location: "Mumbai Gateway",
+            date: iso(now - 5 * 86400000),
+            notes: "",
+            source: "DHL API",
+          },
+          {
+            status: "In Transit",
+            carrierEvent: "Departed facility",
+            location: "In transit to JFK",
+            date: iso(now - 1 * 86400000),
+            notes: "",
+            source: "DHL API",
+          },
+        ],
+      );
+      mk(
+        "SGX-2026-00002",
+        "Sarah Whitfield",
+        "Bengaluru, India",
+        "London, UK",
+        "B2C",
+        "Aramex",
+        "AR99201847",
+        [
+          {
+            status: "Pickup Received",
+            carrierEvent: "",
+            location: "Bengaluru, India",
+            date: iso(now - 8 * 86400000),
+            notes: "",
+            source: "System",
+          },
+          {
+            status: "Customs Clearance",
+            carrierEvent: "Held for import documentation",
+            location: "London Heathrow",
+            date: iso(now - 2 * 86400000),
+            notes: "DDP — duties prepaid",
+            source: "CSV Upload",
+          },
+          {
+            status: "Out for Delivery",
+            carrierEvent: "On vehicle for delivery",
+            location: "London, UK",
+            date: iso(now - 3600000),
+            notes: "",
+            source: "Aramex API",
+          },
+        ],
+        null,
+        "customer1",
+      );
+      mk(
+        "SGX-2026-00003",
+        "Amazon FC — SYD3",
+        "Chennai, India",
+        "Sydney, Australia",
+        "FBA",
+        "DHL",
+        "785612349901",
+        [
+          {
+            status: "Pickup Received",
+            carrierEvent: "",
+            location: "Chennai, India",
+            date: iso(now - 10 * 86400000),
+            notes: "",
+            source: "System",
+          },
+          {
+            status: "In Transit",
+            carrierEvent: "Departed origin hub",
+            location: "Chennai Airport",
+            date: iso(now - 9 * 86400000),
+            notes: "",
+            source: "DHL API",
+          },
+          {
+            status: "Delivered",
+            carrierEvent: "Signed by dock staff",
+            location: "Sydney FC — SYD3",
+            date: iso(now - 1 * 86400000),
+            notes: "",
+            source: "Manual Update",
+          },
+        ],
+      );
+      mk(
+        "SGX-2026-00004",
+        "Lena Fischer",
+        "Mumbai, India",
+        "Berlin, Germany",
+        "B2C",
+        "Aramex",
+        "",
+        [
+          {
+            status: "Pickup Received",
+            carrierEvent: "",
+            location: "Mumbai, India",
+            date: iso(now - 2 * 86400000),
+            notes: "",
+            source: "System",
+          },
+          {
+            status: "Exception",
+            carrierEvent: "Missing commercial invoice",
+            location: "Frankfurt Hub",
+            date: iso(now - 1 * 86400000),
+            notes: "Awaiting customs documentation",
+            source: "Manual Update",
+          },
+        ],
+        {
+          type: "Documentation Issue",
+          description: "Awaiting customs documentation",
+          assignedTo: "Ops — Priya",
+          createdAt: iso(now - 1 * 86400000),
+          resolved: false,
+          resolution: "",
+          resolvedAt: "",
+        },
+      );
+    }
+    function iso(ts) {
+      return new Date(ts).toISOString();
+    }
+
+    /* ============================================================ UI HELPERS ============================================================ */
+    function toast(msg, isErr) {
+      const wrap = document.getElementById("toastWrap");
+      const t = document.createElement("div");
+      t.className = "toast" + (isErr ? " err" : "");
+      t.textContent = msg;
+      wrap.appendChild(t);
+      setTimeout(() => t.remove(), 4200);
+    }
+    function fmtDate(d) {
+      const dt = new Date(d);
+      return (
+        dt.toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }) +
+        " · " +
+        dt.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })
+      );
+    }
+
+    /* ============================================================ AUTH / SITE ⇄ LOGIN ⇄ CONSOLE ⇄ CUSTOMER PORTAL (F23) ============================================================ */
+    function hideAllShells() {
+      document.getElementById("siteView").style.display = "none";
+      document.getElementById("loginShell").classList.remove("visible");
+      document.getElementById("adminView").classList.remove("visible");
+      document.getElementById("customerShell").classList.remove("visible");
+      document.getElementById("backPill").classList.remove("visible");
+    }
+    function showSite() {
+      hideAllShells();
+      document.getElementById("siteView").style.display = "";
+    }
+    function showLogin() {
+      hideAllShells();
+      document.getElementById("loginShell").classList.add("visible");
+      document.getElementById("loginError").style.display = "none";
+      document.getElementById("loginUsername").value = "";
+      document.getElementById("loginPassword").value = "";
+    }
+    function showAdmin() {
+      hideAllShells();
+      document.getElementById("adminView").classList.add("visible");
+      document.getElementById("backPill").classList.add("visible");
+      applyRolePermissions();
+      renderAll();
+    }
+    function showCustomerPortal() {
+      hideAllShells();
+      document.getElementById("customerShell").classList.add("visible");
+      document.getElementById("backPill").classList.add("visible");
+      renderCustomerPortal();
+    }
+    document
+      .getElementById("opsPortalLink")
+      .addEventListener("click", (e) => {
+        e.preventDefault();
+        showLogin();
+      });
+    document.getElementById("loginBack").addEventListener("click", (e) => {
+      e.preventDefault();
+      showSite();
+    });
+    document.getElementById("backPill").addEventListener("click", () => {
+      currentUser = null;
+      showSite();
+    });
+
+    async function attemptLogin() {
+      const u = document
+        .getElementById("loginUsername")
+        .value.trim()
+        .toLowerCase();
+      const p = document.getElementById("loginPassword").value;
+      if (Object.keys(USERS).length === 0) await loadUsers();
+      const acct = USERS[u];
+      if (!acct || acct.password !== p) {
+        document.getElementById("loginError").style.display = "block";
+        return;
+      }
+      currentUser = acct;
+      if (acct.role === "Customer") {
+        showCustomerPortal();
+      } else {
+        showAdmin();
+      }
+      toast(`Signed in as ${acct.name} (${acct.role})`);
+    }
+    document
+      .getElementById("loginSubmit")
+      .addEventListener("click", attemptLogin);
+    document
+      .getElementById("loginPassword")
+      .addEventListener("keydown", (e) => {
+        if (e.key === "Enter") attemptLogin();
+      });
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      currentUser = null;
+      showSite();
+    });
+    document
+      .getElementById("customerLogout")
+      .addEventListener("click", () => {
+        currentUser = null;
+        showSite();
+      });
+
+    function applyRolePermissions() {
+      if (!currentUser) return;
+      const perms = ROLE_PERMS[currentUser.role] || {};
+      document.getElementById("userChipName").textContent = currentUser.name;
+      document.getElementById("userChipRole").textContent = currentUser.role;
+      document.getElementById("userChipRole").className =
+        `role-badge role-${currentUser.role}`;
+
+      document.getElementById("navUsers").style.display = perms.manageUsers
+        ? ""
+        : "none";
+      document.querySelector('[data-panel="panelBulk"]').style.display =
+        perms.bulkCSV ? "" : "none";
+      document.querySelector('[data-panel="panelCourier"]').style.display =
+        perms.carrierLinking ? "" : "none";
+      document.getElementById("topAddShipment").style.display =
+        perms.manageShipments ? "" : "none";
+
+      // if current panel is no longer permitted, fall back to dashboard
+      const activePanel = document.querySelector(".snav-item.active");
+      if (activePanel) {
+        const id = activePanel.dataset.panel;
+        if (
+          (id === "panelBulk" && !perms.bulkCSV) ||
+          (id === "panelCourier" && !perms.carrierLinking) ||
+          (id === "panelUsers" && !perms.manageUsers)
+        ) {
+          gotoPanel("panelDash");
+        }
+      }
+    }
+
+    /* ============================================================ SIDEBAR NAV ============================================================ */
+    const panelTitles = {
+      panelDash: [
+        "Dashboard",
+        "Live overview of every shipment in the network",
+      ],
+      panelShipments: [
+        "Shipments",
+        "Search, edit and update the full shipment lifecycle",
+      ],
+      panelExceptions: [
+        "Exceptions",
+        "Shipments currently flagged for operational intervention",
+      ],
+      panelBulk: [
+        "Bulk CSV Update",
+        "Update many shipments' lifecycle status in one upload",
+      ],
+      panelCourier: [
+        "Carrier Linking",
+        "Map SGX tracking numbers to carrier tracking numbers",
+      ],
+      panelUsers: [
+        "Users",
+        "F23 — manage Admin, Operations, Viewer and Customer accounts",
+      ],
+    };
+    document
+      .querySelectorAll(".snav-item")
+      .forEach((btn) =>
+        btn.addEventListener("click", () => gotoPanel(btn.dataset.panel)),
+      );
+    document
+      .querySelectorAll("[data-goto]")
+      .forEach((btn) =>
+        btn.addEventListener("click", () => gotoPanel(btn.dataset.goto)),
+      );
+    function gotoPanel(id) {
+      const perms =
+        ROLE_PERMS[currentUser ? currentUser.role : "Viewer"] || {};
+      if (id === "panelBulk" && !perms.bulkCSV) id = "panelDash";
+      if (id === "panelCourier" && !perms.carrierLinking) id = "panelDash";
+      if (id === "panelUsers" && !perms.manageUsers) id = "panelDash";
+      document
+        .querySelectorAll(".admin-panel")
+        .forEach((p) => (p.style.display = "none"));
+      document.getElementById(id).style.display = "";
+      document
+        .querySelectorAll(".snav-item")
+        .forEach((b) => b.classList.toggle("active", b.dataset.panel === id));
+      document.getElementById("topbarTitle").textContent = panelTitles[id][0];
+      document.getElementById("topbarSub").textContent = panelTitles[id][1];
+      if (id === "panelUsers") renderUsersTable();
+    }
+
+    /* ============================================================ DASHBOARD (F09) ============================================================ */
+    function renderDashboard() {
+      const list = shipmentList();
+      const count = (st) => list.filter((s) => s.status === st).length;
+      document.getElementById("kpiGrid").innerHTML = `
+    <div class="kpi-card accent-navy"><b>${list.length}</b><span>Total shipments</span></div>
+    <div class="kpi-card accent-teal"><b>${count("In Transit")}</b><span>In transit</span></div>
+    <div class="kpi-card accent-teal"><b>${count("Inbound at Hub")}</b><span>Inbound at hub</span></div>
+    <div class="kpi-card accent-orange"><b>${count("Out for Delivery")}</b><span>Out for delivery</span></div>
+    <div class="kpi-card accent-red"><b>${count("Exception")}</b><span>Exceptions</span></div>
+    <div class="kpi-card accent-green"><b>${count("Delivered")}</b><span>Delivered</span></div>
+  `;
+      document.getElementById("exceptionBadge").textContent =
+        count("Exception");
+
+      const byCarrier = {};
+      CARRIERS.forEach((c) => (byCarrier[c] = 0));
+      list.forEach((s) => {
+        const c = s.courier || "Unassigned";
+        byCarrier[c] = (byCarrier[c] || 0) + 1;
+      });
+      const maxC = Math.max(1, ...Object.values(byCarrier));
+      document.getElementById("carrierBreakdown").innerHTML =
+        Object.entries(byCarrier)
+          .filter(([, n]) => n > 0 || CARRIERS.includes)
+          .map(
+            ([c, n]) => `
+    <div class="mini-bar-row"><span class="mini-bar-label">${c}</span><span class="mini-bar-track"><span class="mini-bar-fill" style="width:${(n / maxC) * 100 || 0}%;"></span></span><span class="mini-bar-count">${n}</span></div>
+  `,
+          )
+          .join("") ||
+        `<p style="font-size:12.5px;color:var(--slate);">No data yet</p>`;
+
+      const byStatus = {};
+      STATUS_STAGES.forEach((s) => (byStatus[s] = 0));
+      list.forEach(
+        (s) => (byStatus[s.status] = (byStatus[s.status] || 0) + 1),
+      );
+      const maxS = Math.max(1, ...Object.values(byStatus));
+      document.getElementById("statusBreakdown").innerHTML = Object.entries(
+        byStatus,
+      )
+        .map(
+          ([s, n]) => `
+    <div class="mini-bar-row"><span class="mini-bar-label">${s}</span><span class="mini-bar-track"><span class="mini-bar-fill" style="width:${(n / maxS) * 100 || 0}%;${s === "Exception" ? "background:var(--red);" : ""}"></span></span><span class="mini-bar-count">${n}</span></div>
+  `,
+        )
+        .join("");
+
+      const recent = list
+        .slice()
+        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+        .slice(0, 6);
+      document.getElementById("recentTable").innerHTML = recent.length
+        ? `
+    <thead><tr><th>SGX No.</th><th>Carrier</th><th>Carrier Tracking</th><th>Origin → Destination</th><th>Status</th><th>Updated</th></tr></thead>
+    <tbody>${recent
+          .map(
+            (s) => `
+      <tr>
+        <td class="mono">${s.internalId}</td>
+        <td>${s.courier || '<span style="color:var(--slate)">unassigned</span>'}</td>
+        <td class="mono">${s.courierTrackingNumber || "—"}</td>
+        <td>${s.origin || "—"} → ${s.destination || "—"}</td>
+        <td><span class="badge ${STATUS_BADGE(s.status)}">${s.status}</span></td>
+        <td class="mono" style="color:var(--slate);">${fmtDate(s.updatedAt)}</td>
+      </tr>`,
+          )
+          .join("")}</tbody>
+  `
+        : emptyRow(
+          6,
+          "No shipments yet",
+          "Add a shipment or upload a CSV to get started.",
+        );
+    }
+
+    /* ============================================================ SHIPMENTS TABLE (F07 / F08) ============================================================ */
+    function populateFilters() {
+      const statusSel = document.getElementById("filterStatus");
+      statusSel.innerHTML =
+        `<option value="">All statuses</option>` +
+        STATUS_STAGES.map((s) => `<option value="${s}">${s}</option>`).join(
+          "",
+        );
+      const carrierSel = document.getElementById("filterCarrier");
+      carrierSel.innerHTML =
+        `<option value="">All carriers</option>` +
+        CARRIERS.map((c) => `<option value="${c}">${c}</option>`).join("");
+    }
+    function renderShipmentsTable() {
+      const q = (
+        document.getElementById("searchInput").value || ""
+      ).toLowerCase();
+      const statusFilter = document.getElementById("filterStatus").value;
+      const carrierFilter = document.getElementById("filterCarrier").value;
+      let list = shipmentList()
+        .filter((s) => {
+          const hit =
+            !q ||
+            s.internalId.toLowerCase().includes(q) ||
+            (s.courierTrackingNumber || "").toLowerCase().includes(q) ||
+            (s.consignee || "").toLowerCase().includes(q);
+          const st = !statusFilter || s.status === statusFilter;
+          const cr = !carrierFilter || s.courier === carrierFilter;
+          return hit && st && cr;
+        })
+        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+      document.getElementById("shipCount").textContent =
+        `${list.length} shipment${list.length !== 1 ? "s" : ""}`;
+      document.getElementById("shipmentsTable").innerHTML = list.length
+        ? `
+    <thead><tr><th>SGX No.</th><th>Carrier</th><th>Carrier Tracking</th><th>Origin</th><th>Destination</th><th>Status</th><th>Updated</th><th></th></tr></thead>
+    <tbody>${list
+          .map(
+            (s) => `
+      <tr>
+        <td class="mono">${s.internalId}</td>
+        <td>${s.courier || '<span style="color:var(--slate)">—</span>'}</td>
+        <td class="mono">${s.courierTrackingNumber || "—"}</td>
+        <td>${s.origin || "—"}</td>
+        <td>${s.destination || "—"}</td>
+        <td><span class="badge ${STATUS_BADGE(s.status)}">${s.status}</span></td>
+        <td class="mono" style="color:var(--slate);">${fmtDate(s.updatedAt)}</td>
+        <td>
+          <div class="row-actions">
+            ${(ROLE_PERMS[currentUser ? currentUser.role : "Viewer"] || {})
+                .manageShipments
+                ? `
+            <button class="icon-btn" title="Edit / update status" onclick="openShipModal('${s.internalId}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+            </button>`
+                : `
+            <button class="icon-btn" title="View" onclick="openShipModal('${s.internalId}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>`
+              }
+            ${(ROLE_PERMS[currentUser ? currentUser.role : "Viewer"] || {})
+                .deleteShipments
+                ? `
+            <button class="icon-btn" title="Delete" onclick="deleteShipment('${s.internalId}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+            </button>`
+                : ``
+              }
+          </div>
+        </td>
+      </tr>`,
+          )
+          .join("")}</tbody>
+  `
+        : emptyRow(
+          8,
+          "No shipments match",
+          "Try clearing your search or filters.",
+        );
+    }
+    document
+      .getElementById("searchInput")
+      .addEventListener("input", renderShipmentsTable);
+    document
+      .getElementById("filterStatus")
+      .addEventListener("change", renderShipmentsTable);
+    document
+      .getElementById("filterCarrier")
+      .addEventListener("change", renderShipmentsTable);
+
+    function emptyRow(cols, title, sub) {
+      return `<tbody><tr><td colspan="${cols}"><div class="empty-state">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="7" width="18" height="13" rx="1"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+    <h4>${title}</h4><p>${sub}</p></div></td></tr></tbody>`;
+    }
+    async function deleteShipment(id) {
+      if (!confirm(`Delete shipment ${id}? This can't be undone.`)) return;
+      delete DB[id];
+      await saveDB();
+      renderAll();
+      toast(`Deleted ${id}`);
+    }
+
+    /* ============================================================ EXCEPTIONS (F18) ============================================================ */
+    function renderExceptionsTable() {
+      const list = shipmentList()
+        .filter(
+          (s) =>
+            s.status === "Exception" && s.exception && !s.exception.resolved,
+        )
+        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+      document.getElementById("exceptionsTable").innerHTML = list.length
+        ? `
+    <thead><tr><th>SGX No.</th><th>Carrier</th><th>Exception Type</th><th>Description</th><th>Assigned To</th><th>Since</th><th></th></tr></thead>
+    <tbody>${list
+          .map(
+            (s) => `
+      <tr>
+        <td class="mono">${s.internalId}</td>
+        <td>${s.courier || "—"}</td>
+        <td><span class="badge badge-exception">${s.exception.type}</span></td>
+        <td>${s.exception.description || "—"}</td>
+        <td>${s.exception.assignedTo || "—"}</td>
+        <td class="mono" style="color:var(--slate);">${fmtDate(s.exception.createdAt)}</td>
+        <td>${(ROLE_PERMS[currentUser ? currentUser.role : "Viewer"] || {}).resolveExceptions ? `<button class="btn btn-ghost btn-sm" onclick="openShipModal('${s.internalId}')">Resolve →</button>` : `<button class="btn btn-ghost btn-sm" onclick="openShipModal('${s.internalId}')">View →</button>`}</td>
+      </tr>`,
+          )
+          .join("")}</tbody>
+  `
+        : emptyRow(
+          7,
+          "No open exceptions",
+          "Every shipment is moving normally.",
+        );
+    }
+
+    /* ============================================================ SHIPMENT MODAL (add / edit) ============================================================ */
+    document
+      .getElementById("fStatus")
+      .addEventListener("change", toggleExceptionFields);
+    function toggleExceptionFields() {
+      document.getElementById("fExceptionWrap").style.display =
+        document.getElementById("fStatus").value === "Exception"
+          ? ""
+          : "none";
+    }
+    function openShipModal(id) {
+      editingId = id || null;
+      const s = id ? DB[id] : null;
+      const perms =
+        ROLE_PERMS[currentUser ? currentUser.role : "Viewer"] || {};
+      const readOnly = !perms.manageShipments;
+
+      document.getElementById("shipModalTitle").textContent = s
+        ? `Update ${id}`
+        : "New shipment";
+      document.getElementById("fInternalId").value = s ? s.internalId : "";
+      document.getElementById("fInternalId").disabled = !!s;
+      document.getElementById("fServiceType").value = s
+        ? s.serviceType
+        : "B2C";
+      document.getElementById("fOrigin").value = s ? s.origin || "" : "";
+      document.getElementById("fDestination").value = s ? s.destination : "";
+      document.getElementById("fConsignee").value = s ? s.consignee : "";
+      document.getElementById("fCourier").value = s ? s.courier : "";
+      document.getElementById("fCourierId").value = s
+        ? s.courierTrackingNumber
+        : "";
+      document.getElementById("fLocation").value = "";
+      document.getElementById("fCarrierEvent").value = "";
+      document.getElementById("fNotes").value = "";
+      document.getElementById("fExceptionType").value =
+        s && s.exception ? s.exception.type : "Address Issue";
+      document.getElementById("fAssignedTo").value =
+        s && s.exception ? s.exception.assignedTo || "" : "";
+
+      const custSel = document.getElementById("fCustomerAccount");
+      const customerAccounts = Object.values(USERS).filter(
+        (u) => u.role === "Customer",
+      );
+      custSel.innerHTML =
+        `<option value="">— not linked to a customer login —</option>` +
+        customerAccounts
+          .map(
+            (u) =>
+              `<option value="${u.username}" ${s && s.customerUsername === u.username ? "selected" : ""}>${u.name} (${u.username})</option>`,
+          )
+          .join("");
+
+      const statusSel = document.getElementById("fStatus");
+      statusSel.innerHTML = STATUS_STAGES.map(
+        (st) =>
+          `<option ${s && st === s.status ? "selected" : ""}>${st}</option>`,
+      ).join("");
+      if (!s) statusSel.value = "Pickup Received";
+      toggleExceptionFields();
+
+      // F23: Viewers get a read-only modal — no edits, no save
+      document
+        .querySelectorAll(
+          "#shipModalOverlay input, #shipModalOverlay select, #shipModalOverlay textarea",
+        )
+        .forEach((el) => {
+          if (el.id !== "fInternalId") el.disabled = readOnly;
+        });
+      document.getElementById("fReadonlyBanner").style.display = readOnly
+        ? ""
+        : "none";
+      document.getElementById("shipModalSave").style.display = readOnly
+        ? "none"
+        : "";
+
+      const histWrap = document.getElementById("fHistoryWrap");
+      if (s && s.history && s.history.length) {
+        histWrap.style.display = "";
+        document.getElementById("fHistoryList").innerHTML = s.history
+          .slice()
+          .reverse()
+          .map(
+            (h) => `
+      <li><span class="ht-dot"></span><div class="ht-body">
+        <b>${h.status}</b><span>${fmtDate(h.date)}${h.location ? " · " + h.location : ""}</span>
+        ${h.carrierEvent ? `<p>Carrier event: "${h.carrierEvent}"</p>` : ""}
+        ${h.notes ? `<p>${h.notes}</p>` : ""}
+        <span class="ht-source">${h.source || "Manual Update"}</span>
+      </div></li>`,
+          )
+          .join("");
+      } else {
+        histWrap.style.display = "none";
+      }
+      document.getElementById("shipModalOverlay").classList.add("visible");
+    }
+    function closeShipModal() {
+      document.getElementById("shipModalOverlay").classList.remove("visible");
+      editingId = null;
+    }
+    document
+      .getElementById("shipModalClose")
+      .addEventListener("click", closeShipModal);
+    document
+      .getElementById("shipModalCancel")
+      .addEventListener("click", closeShipModal);
+    document
+      .getElementById("topAddShipment")
+      .addEventListener("click", () => openShipModal(null));
+
+    document
+      .getElementById("shipModalSave")
+      .addEventListener("click", async () => {
+        const perms =
+          ROLE_PERMS[currentUser ? currentUser.role : "Viewer"] || {};
+        if (!perms.manageShipments) {
+          toast("You don't have permission to edit shipments.", true);
+          return;
+        }
+        let id = document.getElementById("fInternalId").value.trim();
+        const origin = document.getElementById("fOrigin").value.trim();
+        const dest = document.getElementById("fDestination").value.trim();
+        if (!id) {
+          id = nextInternalId();
+        }
+        const status = document.getElementById("fStatus").value;
+        const location = document.getElementById("fLocation").value.trim();
+        const carrierEvent = document
+          .getElementById("fCarrierEvent")
+          .value.trim();
+        const notes = document.getElementById("fNotes").value.trim();
+        const customerUsername =
+          document.getElementById("fCustomerAccount").value;
+        const now = new Date().toISOString();
+        const existing = DB[id];
+        const historyEntry = {
+          status,
+          carrierEvent,
+          location,
+          date: now,
+          notes,
+          source: "Manual Update",
+        };
+
+        // exception handling (F18)
+        let exceptionObj = existing ? existing.exception : null;
+        if (status === "Exception") {
+          exceptionObj = {
+            type: document.getElementById("fExceptionType").value,
+            description: notes,
+            assignedTo: document.getElementById("fAssignedTo").value.trim(),
+            createdAt:
+              exceptionObj && !exceptionObj.resolved
+                ? exceptionObj.createdAt
+                : now,
+            resolved: false,
+            resolution: "",
+            resolvedAt: "",
+          };
+        } else if (exceptionObj && !exceptionObj.resolved) {
+          exceptionObj = {
+            ...exceptionObj,
+            resolved: true,
+            resolution: notes || "Resolved",
+            resolvedAt: now,
+          };
+        }
+
+        if (existing) {
+          existing.consignee = document
+            .getElementById("fConsignee")
+            .value.trim();
+          existing.origin = origin;
+          existing.destination = dest;
+          existing.serviceType =
+            document.getElementById("fServiceType").value;
+          existing.courier = document.getElementById("fCourier").value;
+          existing.courierTrackingNumber = document
+            .getElementById("fCourierId")
+            .value.trim();
+          existing.customerUsername = customerUsername;
+          if (
+            existing.status !== status ||
+            location ||
+            notes ||
+            carrierEvent
+          ) {
+            existing.history.push(historyEntry);
+            existing.status = status;
+          }
+          existing.exception = exceptionObj;
+          existing.updatedAt = now;
+        } else {
+          DB[id] = {
+            internalId: id,
+            consignee: document.getElementById("fConsignee").value.trim(),
+            origin,
+            destination: dest,
+            serviceType: document.getElementById("fServiceType").value,
+            courier: document.getElementById("fCourier").value,
+            courierTrackingNumber: document
+              .getElementById("fCourierId")
+              .value.trim(),
+            customerUsername,
+            status,
+            history: [historyEntry],
+            exception: exceptionObj,
+            createdAt: now,
+            updatedAt: now,
+          };
+        }
+        await saveDB();
+        closeShipModal();
+        renderAll();
+        toast(`Saved ${id}`);
+      });
+
+    /* ============================================================ CARRIER LINKING (F04) ============================================================ */
+    function renderCourierTable() {
+      const list = shipmentList().sort(
+        (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt),
+      );
+      document.getElementById("courierTable").innerHTML = list.length
+        ? `
+    <thead><tr><th>SGX No.</th><th>Carrier</th><th>Carrier Tracking No.</th><th>Status</th><th></th></tr></thead>
+    <tbody>${list
+          .map(
+            (s) => `
+      <tr>
+        <td class="mono">${s.internalId}</td>
+        <td>${s.courier || '<span style="color:var(--slate)">unassigned</span>'}</td>
+        <td class="mono">${s.courierTrackingNumber || '<span style="color:var(--slate)">not linked</span>'}</td>
+        <td><span class="badge ${STATUS_BADGE(s.status)}">${s.status}</span></td>
+        <td><button class="btn btn-ghost btn-sm" onclick="prefillLink('${s.internalId}')">Edit link</button></td>
+      </tr>`,
+          )
+          .join("")}</tbody>
+  `
+        : emptyRow(
+          5,
+          "No shipments yet",
+          "Link a carrier once you've added shipments.",
+        );
+    }
+    function prefillLink(id) {
+      const s = DB[id];
+      document.getElementById("linkInternalId").value = id;
+      document.getElementById("linkCourier").value = s.courier || "DHL";
+      document.getElementById("linkCourierId").value =
+        s.courierTrackingNumber || "";
+      document
+        .getElementById("panelCourier")
+        .scrollIntoView({ behavior: "smooth" });
+    }
+    document
+      .getElementById("linkSubmit")
+      .addEventListener("click", async () => {
+        const id = document.getElementById("linkInternalId").value.trim();
+        const courier = document.getElementById("linkCourier").value;
+        const courierId = document
+          .getElementById("linkCourierId")
+          .value.trim();
+        if (!id || !courierId) {
+          toast(
+            "Enter both a tracking number and a carrier tracking number.",
+            true,
+          );
+          return;
+        }
+        const now = new Date().toISOString();
+        if (!DB[id]) {
+          DB[id] = {
+            internalId: id,
+            consignee: "",
+            origin: "",
+            destination: "",
+            serviceType: "B2C",
+            courier,
+            courierTrackingNumber: courierId,
+            status: "Pickup Received",
+            history: [
+              {
+                status: "Pickup Received",
+                carrierEvent: "",
+                location: "",
+                date: now,
+                notes: "Created via carrier linking",
+                source: "System",
+              },
+            ],
+            exception: null,
+            createdAt: now,
+            updatedAt: now,
+          };
+        } else {
+          DB[id].courier = courier;
+          DB[id].courierTrackingNumber = courierId;
+          DB[id].updatedAt = now;
+        }
+        await saveDB();
+        document.getElementById("linkInternalId").value = "";
+        document.getElementById("linkCourierId").value = "";
+        renderAll();
+        toast(`Linked ${id} → ${courier} ${courierId}`);
+      });
+
+    /* ============================================================ USER MANAGEMENT (F23 — Admin only) ============================================================ */
+    let editingUsername = null;
+    function renderUsersTable() {
+      const perms =
+        ROLE_PERMS[currentUser ? currentUser.role : "Viewer"] || {};
+      if (!perms.manageUsers) {
+        return;
+      }
+      const list = Object.values(USERS).sort((a, b) =>
+        a.name.localeCompare(b.name),
+      );
+      document.getElementById("usersTable").innerHTML = list.length
+        ? `
+    <thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Password</th><th></th></tr></thead>
+    <tbody>${list
+          .map(
+            (u) => `
+      <tr>
+        <td>${u.name}</td>
+        <td class="mono">${u.username}</td>
+        <td><span class="role-badge role-${u.role}" style="color:var(--ink);background:var(--paper);">${u.role}</span></td>
+        <td class="mono" style="color:var(--slate);">${"•".repeat(Math.min(u.password.length, 10))}</td>
+        <td>
+          <div class="row-actions">
+            <button class="icon-btn" title="Edit" onclick="openUserModal('${u.username}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+            </button>
+            ${u.username !== currentUser.username
+                ? `
+            <button class="icon-btn" title="Delete" onclick="deleteUser('${u.username}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+            </button>`
+                : ``
+              }
+          </div>
+        </td>
+      </tr>`,
+          )
+          .join("")}</tbody>
+  `
+        : emptyRow(
+          5,
+          "No users yet",
+          "Add the first account to get started.",
+        );
+    }
+    function openUserModal(username) {
+      editingUsername = username || null;
+      const u = username ? USERS[username] : null;
+      document.getElementById("userModalTitle").textContent = u
+        ? `Edit ${u.username}`
+        : "New user";
+      document.getElementById("uUsername").value = u ? u.username : "";
+      document.getElementById("uUsername").disabled = !!u;
+      document.getElementById("uPassword").value = u ? u.password : "";
+      document.getElementById("uName").value = u ? u.name : "";
+      document.getElementById("uRole").value = u ? u.role : "Operations";
+      document.getElementById("userModalOverlay").classList.add("visible");
+    }
+    function closeUserModal() {
+      document.getElementById("userModalOverlay").classList.remove("visible");
+      editingUsername = null;
+    }
+    document
+      .getElementById("addUserBtn")
+      .addEventListener("click", () => openUserModal(null));
+    document
+      .getElementById("userModalClose")
+      .addEventListener("click", closeUserModal);
+    document
+      .getElementById("userModalCancel")
+      .addEventListener("click", closeUserModal);
+    document
+      .getElementById("userModalSave")
+      .addEventListener("click", async () => {
+        const username = document
+          .getElementById("uUsername")
+          .value.trim()
+          .toLowerCase();
+        const password = document.getElementById("uPassword").value;
+        const name = document.getElementById("uName").value.trim();
+        const role = document.getElementById("uRole").value;
+        if (!username || !password || !name) {
+          toast("Username, password and name are all required.", true);
+          return;
+        }
+        USERS[username] = { username, password, name, role };
+        await saveUsers();
+        closeUserModal();
+        renderUsersTable();
+        toast(`Saved user ${username}`);
+      });
+    async function deleteUser(username) {
+      if (
+        !confirm(`Delete user account "${username}"? This can't be undone.`)
+      )
+        return;
+      delete USERS[username];
+      await saveUsers();
+      renderUsersTable();
+      toast(`Deleted ${username}`);
+    }
+
+    /* ============================================================ BULK CSV UPLOAD (F10 / F11) ============================================================ */
+    const dropzone = document.getElementById("dropzone");
+    const csvFileInput = document.getElementById("csvFileInput");
+    dropzone.addEventListener("click", () => csvFileInput.click());
+    dropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropzone.classList.add("drag");
+    });
+    dropzone.addEventListener("dragleave", () =>
+      dropzone.classList.remove("drag"),
+    );
+    dropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropzone.classList.remove("drag");
+      if (e.dataTransfer.files.length) handleCSVFile(e.dataTransfer.files[0]);
+    });
+    csvFileInput.addEventListener("change", (e) => {
+      if (e.target.files.length) handleCSVFile(e.target.files[0]);
+    });
+
+    document
+      .getElementById("downloadTemplate")
+      .addEventListener("click", () => {
+        const csv =
+          "internal_tracking,carrier,carrier_tracking,origin,destination,status,last_update,event_location,event_datetime\n" +
+          "SGX-2026-00001,DHL,1234567890,Mumbai,New York,In Transit,,Dubai Hub,17 Aug 2026 14:35\n" +
+          "SGX-2026-90001,Aramex,,Mumbai,Berlin,Pickup Received,,,\n";
+        const blob = new Blob([csv], { type: "text/csv" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "sgships_bulk_tracking_template.csv";
+        a.click();
+      });
+
+    function handleCSVFile(file) {
+      if (!file.name.toLowerCase().endsWith(".csv")) {
+        toast("Please upload a .csv file.", true);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const rows = parseCSV(e.target.result);
+        if (!rows.length) {
+          toast("Couldn't find any rows in that file.", true);
+          return;
+        }
+        await processBulkRows(rows);
+      };
+      reader.readAsText(file);
+    }
+    function parseCSV(text) {
+      const lines = text.split(/\r\n|\n/).filter((l) => l.trim().length);
+      if (!lines.length) return [];
+      const headers = splitCSVLine(lines[0]).map((h) =>
+        h.trim().toLowerCase(),
+      );
+      const rows = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cells = splitCSVLine(lines[i]);
+        if (cells.every((c) => !c.trim())) continue;
+        const obj = {};
+        headers.forEach((h, idx) => (obj[h] = (cells[idx] || "").trim()));
+        rows.push(obj);
+      }
+      return rows;
+    }
+    function splitCSVLine(line) {
+      const out = [];
+      let cur = "";
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (c === '"') {
+          inQuotes = !inQuotes;
+          continue;
+        }
+        if (c === "," && !inQuotes) {
+          out.push(cur);
+          cur = "";
+          continue;
+        }
+        cur += c;
+      }
+      out.push(cur);
+      return out;
+    }
+    async function processBulkRows(rows) {
+      let updated = 0,
+        created = 0,
+        errors = [],
+        warnings = [];
+      const now = new Date().toISOString();
+      const seenInFile = new Set();
+
+      rows.forEach((row, idx) => {
+        const id = row["internal_tracking"];
+        const carrier = row["carrier"];
+        const carrierTracking = row["carrier_tracking"];
+        const status = row["status"];
+
+        if (!id || !carrier || !carrierTracking || !status) {
+          errors.push(
+            `Row ${idx + 2}: missing a required field (internal_tracking, carrier, carrier_tracking, status)`,
+          );
+          return;
+        }
+        if (seenInFile.has(id)) {
+          errors.push(
+            `Row ${idx + 2}: duplicate row for ${id} in this upload — only the first occurrence was applied`,
+          );
+          return;
+        }
+        seenInFile.add(id);
+
+        const validStatus = STATUS_STAGES.find(
+          (s) => s.toLowerCase() === status.toLowerCase(),
+        );
+        if (!validStatus) {
+          errors.push(
+            `Row ${idx + 2}: "${status}" is not a recognized status`,
+          );
+          return;
+        }
+
+        let date = now;
+        const rawDate = row["last_update"] || row["event_datetime"];
+        if (rawDate) {
+          const parsed = new Date(rawDate);
+          if (isNaN(parsed.getTime())) {
+            warnings.push(
+              `Row ${idx + 2}: couldn't parse date "${rawDate}" — used upload time instead`,
+            );
+          } else {
+            date = parsed.toISOString();
+          }
+        }
+
+        const entry = {
+          status: validStatus,
+          carrierEvent: "",
+          location: row["event_location"] || "",
+          date,
+          notes: "",
+          source: "CSV Upload",
+        };
+
+        if (DB[id]) {
+          DB[id].history.push(entry);
+          DB[id].status = validStatus;
+          DB[id].courier = carrier;
+          DB[id].courierTrackingNumber = carrierTracking;
+          if (row["origin"]) DB[id].origin = row["origin"];
+          if (row["destination"]) DB[id].destination = row["destination"];
+          DB[id].updatedAt = now;
+          if (
+            validStatus === "Exception" &&
+            (!DB[id].exception || DB[id].exception.resolved)
+          ) {
+            DB[id].exception = {
+              type: "Shipment Delayed",
+              description: "Flagged via CSV upload",
+              assignedTo: "",
+              createdAt: now,
+              resolved: false,
+              resolution: "",
+              resolvedAt: "",
+            };
+          } else if (
+            validStatus !== "Exception" &&
+            DB[id].exception &&
+            !DB[id].exception.resolved
+          ) {
+            DB[id].exception = {
+              ...DB[id].exception,
+              resolved: true,
+              resolution: "Resolved via CSV update",
+              resolvedAt: now,
+            };
+          }
+          updated++;
+        } else {
+          DB[id] = {
+            internalId: id,
+            consignee: "",
+            origin: row["origin"] || "",
+            destination: row["destination"] || "",
+            serviceType: "B2C",
+            courier: carrier,
+            courierTrackingNumber: carrierTracking,
+            status: validStatus,
+            history: [entry],
+            exception:
+              validStatus === "Exception"
+                ? {
+                  type: "Shipment Delayed",
+                  description: "Flagged via CSV upload",
+                  assignedTo: "",
+                  createdAt: now,
+                  resolved: false,
+                  resolution: "",
+                  resolvedAt: "",
+                }
+                : null,
+            createdAt: date,
+            updatedAt: now,
+          };
+          created++;
+        }
+      });
+
+      await saveDB();
+      renderAll();
+
+      document.getElementById("uploadResult").innerHTML = `
+    <div class="result-summary">
+      <span class="result-chip chip-ok">${updated} updated</span>
+      <span class="result-chip chip-new">${created} created</span>
+      ${warnings.length ? `<span class="result-chip chip-warn">${warnings.length} warning${warnings.length !== 1 ? "s" : ""}</span>` : ""}
+      ${errors.length ? `<span class="result-chip chip-err">${errors.length} skipped</span>` : ""}
+    </div>
+    ${errors.length || warnings.length ? `<div class="csv-schema" style="color:#F0B429;">${[...errors, ...warnings].slice(0, 14).join("<br>")}${errors.length + warnings.length > 14 ? `<br>+ ${errors.length + warnings.length - 14} more` : ""}</div>` : ""}
+  `;
+      csvFileInput.value = "";
+      toast(
+        `CSV processed — ${updated} updated, ${created} created${errors.length ? `, ${errors.length} skipped` : ""}`,
+      );
+    }
+
+    /* ============================================================ PUBLIC TRACKING WIDGET (F02 / F17) ============================================================ */
+    document
+      .getElementById("pubTrackBtn")
+      .addEventListener("click", doPublicTrack);
+    document
+      .getElementById("pubTrackInput")
+      .addEventListener("keydown", (e) => {
+        if (e.key === "Enter") doPublicTrack();
+      });
+    function findShipmentByAnyNumber(val) {
+      let s = DB[val] || DB[val.toUpperCase()];
+      if (!s) {
+        s = shipmentList().find(
+          (sh) =>
+            sh.courierTrackingNumber &&
+            sh.courierTrackingNumber.toLowerCase() === val.toLowerCase(),
+        );
+      }
+      return s;
+    }
+    function buildTrackingCardHtml(s) {
+      const currentIdx = MAIN_FLOW.indexOf(s.status);
+      const isException = s.status === "Exception";
+      const stepsHtml = MAIN_FLOW.map((stg, i) => {
+        let cls = "step-upcoming",
+          mark = "○";
+        if (!isException) {
+          if (i < currentIdx) {
+            cls = "step-done";
+            mark = "✓";
+          } else if (i === currentIdx) {
+            cls = "step-current";
+            mark = "●";
+          }
+        } else {
+          const lastGood = s.history
+            .slice()
+            .reverse()
+            .find((h) => h.status !== "Exception");
+          const lastIdx = lastGood ? MAIN_FLOW.indexOf(lastGood.status) : -1;
+          if (i <= lastIdx) {
+            cls = "step-done";
+            mark = "✓";
+          }
+        }
+        return `<li class="${cls}"><span class="step-mark">${mark}</span><span>${stg}</span></li>`;
+      }).join("");
+
+      return `
+    <div class="track-hdr">
+      <div class="track-hdr-top"><b>${s.internalId}</b><span class="status-pill ${STATUS_PILL(s.status)}">${s.status}</span></div>
+      <div class="track-route">${s.origin || "—"} → ${s.destination || "—"}</div>
+      <div class="track-meta"><span>Carrier: <b>${s.courier || "Unassigned"}</b></span><span>Carrier Tracking: <b>${s.courierTrackingNumber || "—"}</b></span><span>Last update: <b>${fmtDate(s.updatedAt)}</b></span></div>
+    </div>
+    ${isException ? `<div class="exception-banner">This shipment needs attention (${s.exception ? s.exception.type : "Exception"}). Our operations team has been notified — contact support if this is urgent.</div>` : ""}
+    <ul class="steplist">${stepsHtml}</ul>
+  `;
+    }
+    async function doPublicTrack() {
+      const val = document.getElementById("pubTrackInput").value.trim();
+      const box = document.getElementById("pubTrackResult");
+      if (!val) {
+        box.innerHTML = `<div class="empty">Enter a tracking number above</div>`;
+        return;
+      }
+      if (Object.keys(DB).length === 0) await loadDB();
+      const s = findShipmentByAnyNumber(val);
+      if (!s) {
+        box.innerHTML = `<div class="empty">Shipment not found<br><br>Check the number and try again, or contact support.</div>`;
+        return;
+      }
+      box.innerHTML = buildTrackingCardHtml(s);
+    }
+
+    /* ============================================================ CUSTOMER PORTAL (F23 — Customer role) ============================================================ */
+    function renderCustomerPortal() {
+      document.getElementById("customerGreeting").textContent =
+        `Welcome, ${currentUser.name.split(" ")[0]}`;
+      const mine = shipmentList()
+        .filter((s) => s.customerUsername === currentUser.username)
+        .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+      const wrap = document.getElementById("customerShipmentList");
+      if (!mine.length) {
+        wrap.innerHTML = `<div class="customer-card"><div class="empty-state" style="padding:30px 0;">
+      <h4>No shipments linked yet</h4><p>Your SGShips shipments will appear here once linked to your account.</p>
+    </div></div>`;
+        return;
+      }
+      wrap.innerHTML = mine
+        .map(
+          (s) =>
+            `<div class="customer-card">${buildTrackingCardHtml(s)}</div>`,
+        )
+        .join("");
+    }
+
+    /* ============================================================ BARCODE decoration ============================================================ */
+    (function drawBarcode() {
+      const el = document.getElementById("barcodeBars");
+      let html = "";
+      for (let i = 0; i < 46; i++) {
+        const w = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
+        const h = 60 - Math.random() * 30;
+        html += `<i style="width:${w}px;height:${h}%;"></i>`;
+      }
+      el.innerHTML = html;
+    })();
+
+    /* ============================================================ INIT ============================================================ */
+    function renderAll() {
+      populateFilters();
+      renderDashboard();
+      renderShipmentsTable();
+      renderExceptionsTable();
+      renderCourierTable();
+    }
+    (async function init() {
+      await loadDB();
+      await loadUsers();
+    })();
+  </script>
+</body>
+
+</html>
